@@ -1,3 +1,36 @@
+<script setup>
+import { ref, onMounted } from 'vue';
+import { index, store } from './../../services/users.service.js';
+
+const users = ref({}); //index
+const mostrar = async () => {
+  try {
+    const response = await index();
+    users.value = response.data;
+    console.log(users.value)
+  } catch (error) {
+    console.error('Error al obtener los usuarios:', error);
+  }
+};
+
+const datos = ref({});  //store
+const registrar = async () => {
+  try {
+    const response = await store(datos.value);
+    alert(response.data.message);
+    mostrar();
+  } catch (error) {
+    console.error('Error al registrar un usuario:', error.response.data.message);
+    alert(error.response.data.message);
+  }
+};
+
+// Llamar a la función al montar el componente
+onMounted(() => {
+  mostrar();
+});
+</script>
+
 <template>
   <div>
     <table class="table table-hover">
@@ -62,35 +95,4 @@
 
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
-import { index, store } from './../../services/users.service.js';
 
-const users = ref({}); //index
-const mostrar = async () => {
-  try {
-    const response = await index();
-    users.value = response.data;
-    console.log(users.value)
-  } catch (error) {
-    console.error('Error al obtener los usuarios:', error);
-  }
-};
-
-const datos = ref({});  //store
-const registrar = async () => {
-  try {
-    const response = await store(datos.value);
-    alert(response.data.message);
-    mostrar();
-  } catch (error) {
-    console.error('Error al registrar un usuario:', error.response.data.message);
-    alert(error.response.data.message);
-  }
-};
-
-// Llamar a la función al montar el componente
-onMounted(() => {
-  mostrar();
-});
-</script>

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import user from '../views/admin/user.vue';
 import login from '../views/auth/login.vue';
+import postulante from '../views/admin/postulante.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,7 +35,15 @@ const router = createRouter({
       meta:{
         redirectIfAuth: true
       }
-    }
+    },
+    {
+      path: '/postulantes',
+      name: 'postulante',
+      component: postulante,
+      meta: {
+        requireAuth: true
+      }
+    },
   ]
 });
 

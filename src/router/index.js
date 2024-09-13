@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import user from '../views/users/user.vue';
+import user from '../views/admin/user.vue';
 import login from '../views/auth/login.vue';
 
 const router = createRouter({
@@ -22,14 +22,41 @@ const router = createRouter({
     {
       path: '/users',
       name: 'user',
-      component: user
+      component: user,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/login',
       name: 'login',
-      component: login
+      component: login,
+      meta:{
+        redirectIfAuth: true
+      }
     }
   ]
-})
+});
+
+  //Guard (protegemos las rutas)
+  router.beforeEach((to, from, next)=>{
+    //buscamos el token (si existe)
+    let token = localStorage.getItem("access_token");
+    if(to.meta.requireAuth){
+      if(!token){
+        return next({
+          name: 'login'
+        })
+      }
+      return next();
+      }
+
+      if(to.meta.redirectIfAuth && token){
+        return next({
+          name:'user'
+        })
+      }
+      return next();
+    });
 
 export default router

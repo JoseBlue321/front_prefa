@@ -1,7 +1,7 @@
 <script setup>
 import { ref,onMounted } from 'vue';
-import { index } from './../../services/postulante.service.js';
-
+import { index,store,show,update,destroy } from './../../services/postulante.service.js';
+const errors = ref({});
 //index
 const postulantes = ref({});
 const mostrar = async()=>{
@@ -12,20 +12,61 @@ const mostrar = async()=>{
     } catch (error) {
     }
 };
-
-//store
-const datos = ref({});
-function registrar(){
-    console.log(datos.value);
-}
-
-
-
-
 onMounted(()=>{
     mostrar()
 });
 
+//store
+const datos = ref({});
+const registrar = async()=>{
+    try {
+        if(datos.value.id){
+            //actualizar
+            const response = await update(datos.value.id,datos.value);
+            datos.value = {};
+        }else{
+            //registrar
+            const response = await store(datos.value);
+        }
+        mostrar();
+    } catch (error) {
+        console.log(error)
+        if(error.response.status == 422){
+            errors.value = error.response.data.errors;
+    }else{
+        alert(error.response.data.message);
+    }
+    }
+}
+
+//show
+const ve = ref({});
+const ver = async(postulante)=>{
+    try {
+        const response = await show(postulante.id)
+        ve.value = response.data;
+    } catch (error) {
+    }
+}
+
+//update
+const editar = async(postulante)=>{
+    try {
+        console.log(postulante);
+        datos.value = postulante;
+    } catch (error) {
+
+    }
+}
+
+//delete
+const eliminar = async(postulante)=>{
+    if(confirm("Estas seguro de eliminar")){
+        const response = await destroy(postulante.id);
+        console.log(response)
+        mostrar();
+    }
+}
 
 </script>
 
@@ -52,6 +93,9 @@ h2{
                 <th>genero</th>
                 <th>fecha nacimiento</th>
                 <th>correo</th>
+                <th>show</th>
+                <th>update</th>
+                <th>delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,6 +107,15 @@ h2{
                     <td>{{ postulante.genero }}</td>
                     <td>{{ postulante.fecha_nacimiento }}</td>
                     <td>{{ postulante.correo }}</td>
+                    <td>
+                        <a @click="ver( postulante)" class="btn btn-info" role="button">ver</a>
+                    </td>
+                    <td>
+                        <a @click="editar(postulante)" class="btn btn-success" role="button">editar</a>
+                    </td>
+                    <td>
+                        <a @click="eliminar(postulante)" class="btn btn-danger" role="button">delete</a>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -72,18 +125,41 @@ h2{
         <h2>store</h2>
         <label for="user_id">user_id</label>
         <input type="number" id="user_id" v-model="datos.user_id">
+        {{ errors.user_id }}
         <br>
         <label for="carnet">carnet</label>
         <input type="text" id="carnet" v-model="datos.carnet">
+        {{ errors.carnet }}
         <br>
         <label for="nombre">nombre</label>
         <input type="text" id="nombre" v-model="datos.nombre">
+        {{ errors.nombre }}
         <br>
         <label for="genero">genero</label>
         <input type="text" id="genero" v-model="datos.genero">
-
+        {{ errors.genero }}
         <br>
-        <button @click="registrar()">Registrar</button>
+        <label for="fecha_nacimiento">fecha de nacimiento</label>
+        <input type="date" id="fecha_nacimiento" v-model="datos.fecha_nacimiento">
+        {{ errors.fecha_nacimiento }}
+        <br>
+        <label for="correo">Correo</label>
+        <input type="email" id="correo" v-model="datos.correo">
+        {{ errors.correo }}
+        <br>
+        <label for="fecha_pago">fecha pago</label>
+        <input type="datetime-local" id="fecha_pago" v-model="datos.fecha_pago">
+        {{ errors.fecha_pago }}
+        <br>
+        <button @click="registrar()" class="btn btn-primary"> 
+            {{ datos.id?'Actualizar':'Registrar' }}
+        </button>
     </div>
-
+    
+    <div>
+        <h2>show</h2>
+        <p>
+            {{ ve.id }}  {{ ve.user_id }}  {{ ve.carnet }}  {{ ve.nombre }}
+        </p>
+    </div>
 </template>

@@ -3,17 +3,16 @@
         <h1>ingresar</h1>
         <div class="form-group">
             <label for="c">Ingrese su correo</label>
-            <input v-model="credenciales.email" type="email" class="form-control" name="" id="" aria-describedby="emailHelpId" placeholder="">
+            <input v-model="credenciales.email" type="email" class="form-control" name="" id="c" aria-describedby="emailHelpId" placeholder="">
         </div>
         {{ errors.email }}
         <div class="form-group">
             <label for="p">Contraseña</label>
-            <input v-model="credenciales.password" type="password" class="form-control" name="" id="" placeholder="">
+            <input v-model="credenciales.password" type="password" class="form-control" name="" id="p" placeholder="">
         </div>
         {{ errors.password }}
         <button @click="ingresar()" class="btn btn-primary">ingresar</button>
     </div>
-    {{ credenciales }}
     
 </template>
 

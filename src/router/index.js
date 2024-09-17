@@ -21,19 +21,19 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
-      path: '/users',
-      name: 'user',
-      component: user,
-      meta: {
-        requireAuth: true
-      }
-    },
-    {
       path: '/login',
       name: 'login',
       component: login,
       meta:{
         redirectIfAuth: true
+      }
+    },
+    {
+      path: '/users',
+      name: 'user',
+      component: user,
+      meta: {
+        requireAuth: true
       }
     },
     {
